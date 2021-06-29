@@ -47,6 +47,7 @@ python /hpcfs/users/a1717363/tkgwv2-master/TKGWV2.py \
  plink2tkrelated --freqFile /hpcfs/users/a1717363/InkaAncestryProj/Analyses/Low-cov_kinship/HumOrg_Extra_NOADMIXTURE.frq \
 deactivate
 ```
+Phoenix Wiki for using Python virtual envs inside slurm script: https://wiki.adelaide.edu.au/hpc/Python_virtual_environment
 
 # Identity By Descent (IBD)
 ## hapROH
