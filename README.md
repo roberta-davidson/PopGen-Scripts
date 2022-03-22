@@ -32,20 +32,43 @@ Paper:https://www.biorxiv.org/content/10.1101/2021.06.22.449449v1 \
 GitHub: https://github.com/danimfernandes/tkgwv2 \
 Slurm submition script: (Doesn't work yet)
 ```
-ml plink/1.90beta-4.4-21-May
-ml R/3.6.3
-ml Python/3.6.6
-source /hpcfs/users/a1717363/local/virtualenvs/tkgwv2/bin/activate
+module purge
+ml arch/haswell
+ml arch/arch/haswell
+ml modulefiles/arch/haswell
+ml R/3.5.1
+export R_LIBS_USER=/hpcfs/users/a1717363/local/RLibs
+ml plink
+#requires python 3
 
-cd /hpcfs/users/a1717363/IncaModern/07-indelRealign/
+#plink prefix name of population reference panel
+POP_FRQ=SAmerge4
 
-python /hpcfs/users/a1717363/tkgwv2-master/TKGWV2.py \
- bam2plink --referenceGenome /hpcfs/users/a1717363/mapping_resources/GRCh37/ \
- --gwvList /hpcfs/users/a1717363/InkaAncestryProj/Analyses/Low-cov_kinship/HumOrg_Extra_NOADMIXTURE.BED \
- --bamExtension indelReal.bam \
- --gwvPlink /hpcfs/users/a1717363/InkaAncestryProj/Analyses/Low-cov_kinship/HumOrg_Extra_NOADMIXTURE \
- plink2tkrelated --freqFile /hpcfs/users/a1717363/InkaAncestryProj/Analyses/Low-cov_kinship/HumOrg_Extra_NOADMIXTURE.frq \
-deactivate
+# filter missing SNPs (geno 0.9999) and fixed sites (maf 0.001) in ref dataset 
+plink --bfile ${POP_FRQ} --keep-allele-order --maf 0.001 --geno 0.99999 --make-bed --out ${POP_FRQ}_maf
+
+#call population allele frequencies from ref dataset
+plink --bfile ${POP_FRQ}_maf --freq --out ${POP_FRQ}
+rm *nosex
+
+#write BED file of sites in .frq file (CHR pos0 pos1). 
+ # NB This works where the SNP name has been changed to "CHR_POS" previous to generating the .frq file
+awk 'NR>1 {print $1,$2}' ${POP_FRQ}.frq > ${POP_FRQ}.1.BED 
+sed -i 's/_/\t/g' ${POP_FRQ}.1.BED
+awk '{n=1; print $1,$3-n,$3}' ${POP_FRQ}.1.BED > ${POP_FRQ}.BED
+rm ${POP_FRQ}.1.BED
+
+# Run TKGWV2
+# Starting from BAM files and running 'bam2plink' and then 'plink2tkrelated':
+# Will run bam2plink and plink2related on run directory, so move bams into rundir
+/hpcfs/users/a1717363/Programs/tkgwv2-master/TKGWV2.py bam2plink \
+	--referenceGenome /hpcfs/users/a1717363/mapping_resources/GRCh37/human_g1k_v37_decoy.fasta \
+	--gwvList ./${POP_FRQ}.BED \
+	--gwvPlink ./${POP_FRQ}_maf \
+	--bamExtension libmerged.trimmed.bam \
+	plink2tkrelated \
+	--freqFile ./${POP_FRQ}.frq \
+	--dyads Priestess.dyads
 ```
 Phoenix Wiki for using Python virtual envs inside slurm script: https://wiki.adelaide.edu.au/hpc/Python_virtual_environment
 
