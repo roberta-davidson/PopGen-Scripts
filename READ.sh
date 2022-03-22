@@ -19,4 +19,4 @@ ${DATA}=${1}
 plink --bfile ${DATA} --keep-allele-order --maf 0.01 --geno 0.999999 --mind 1.0 --allow-no-sex --recode transpose --out ${DATA}
 
 # Run READ
-python /hpcfs/users/a1717363/Programs/tkgwv2-master/READ.py ${DATA}
+python /hpcfs/users/a1717363/Programs/read/READ.py ${DATA}
