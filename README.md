@@ -27,6 +27,15 @@ f4mode: YES
 The kinship analysis in READ is one-liners in plink to prune the data then one-liner for READ … “python ./READ.py dataprefix”. 
 READ: https://bitbucket.org/tguenther/read/src/master/ 
 
+Prepare dataset:
+```
+plink --bfile ${DATA} --keep-allele-order --maf 0.01 --geno 0.999999 --mind 1.0 --allow-no-sex --recode transpose --out ${DATA}
+```
+READ requires R so I've been downloading and running locally:
+Run READ:
+```
+python READ.py <dataprefix>
+```
 ## TKGWV2
 Paper:https://www.biorxiv.org/content/10.1101/2021.06.22.449449v1 \
 GitHub: https://github.com/danimfernandes/tkgwv2 \
