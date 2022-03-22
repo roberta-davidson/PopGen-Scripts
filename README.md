@@ -27,10 +27,10 @@ f4mode: YES
 The kinship analysis in READ is one-liners in plink to prune the data then one-liner for READ … “python ./READ.py dataprefix”. 
 READ: https://bitbucket.org/tguenther/read/src/master/ 
 
-## hapROH
+## TKGWV2
 Paper:https://www.biorxiv.org/content/10.1101/2021.06.22.449449v1 \
 GitHub: https://github.com/danimfernandes/tkgwv2 \
-Slurm submition script: (Doesn't work yet)
+Slurm submition script prepares input files from reference panel set in binary plink: 
 ```
 module purge
 ml arch/haswell
