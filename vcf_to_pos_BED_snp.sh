@@ -30,7 +30,7 @@ awk -v OFS='\t' '{print $1"_"$2,$3}'  ${VCF}.nohead.vcf > ${VCF}.snp_names
 awk -v OFS='\t' '{print $3,$4}' ${VCF}.snp > ${VCF}.pos
 
 #Create .BED from snp sites file
-awk -v OFS='\t' '{n=1;print $3,$4-n,$4}' ${VCF}.snp > ${VCF}.BED
+awk -v OFS='\t' '{n=1;print $2,$4-n,$4}' ${VCF}.snp > ${VCF}.BED
 
 # Clean up
 rm ${VCF}.nohead.vcf
