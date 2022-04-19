@@ -36,8 +36,20 @@ genotypename:   input genotype file (in eigenstrat format)
 snpname:        input snp file      (in eigenstrat format)
 indivname:      input indiv file    (in eigenstrat format)
 popfilename:    a file containing rows with three populations on each line A, B and C.
-inbreed: YES #used if pseudodiploid
+inbreed: YES #used if pseudodiploid or if target pop IS inbred
 ```
+Bash submission script:
+```
+in1=$1
+
+/hpcfs/users/a1717363/Programs/AdmixTools/bin/qp3Pop \
+-p <(echo "genotypename:	${in1}.geno
+snpname:	${in1}.snp
+indivname:	${in1}.ind
+popfilename: ${in1}.qp3.list") \
+> ${in1}.qp3Pop.out
+```
+
 ### F4 Stats
 Command line: `qp3pop -p parfile` where parfile has format:
 ```
