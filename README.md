@@ -28,6 +28,21 @@ make install
 ### F Statistics
 https://bodkan.net/admixr/articles/tutorial.html 
 
+
+### qpWave and qpAdm
+https://github.com/DReichLab/AdmixTools/blob/master/README.QpWave \
+Both take the same input parameter file: 
+```
+genotypename:   input genotype file (in eigenstrat or packedancestrymap r format)
+snpname:       input snp file      (in eigenstrat format)
+indivname:     input indiv file    (in eigenstrat format)
+popleft:       left population list (1 per line) 
+popright:      right population list (1 per line) 
+details:       YES 
+```
+**qpWave** finds out how many admixture events are betwee the left and right populations. usually this should be run before qpAdm \
+**qpAdm** finds the weight of admixture from the rightpop to leftppop (target).
+
 ### Outgroup F3
 Command line: `qp3pop -p parfile` where parfile has format:
 
@@ -51,14 +66,8 @@ popfilename: ${in1}.qp3.list") \
 ```
 
 ### F4 Stats
-Command line: `qp3pop -p parfile` where parfile has format:
-```
-genotypename:   input genotype file (in eigenstrat format)
-snpname:        input snp file      (in eigenstrat format)
-indivname:      input indiv file    (in eigenstrat format)
-popfilename:    a file containing rows with three populations on each line A, B and C.
-f4mode: YES
-```
+
+
 # Kinship Analyses
 ## READ
 The kinship analysis in READ is one-liners in plink to prune the data then one-liner for READ … “python ./READ.py dataprefix”. 
