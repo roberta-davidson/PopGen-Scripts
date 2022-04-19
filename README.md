@@ -1,9 +1,34 @@
 # PopGen-Scripts
 
-# F Statistics
+## ADMIXTOOLS
+https://github.com/DReichLab/AdmixTools \
+Install on HPC:
+```
+git clone https://github.com/DReichLab/AdmixTools.git
+```
+```
+ml gslib/90-GCC-4.9.3-binutils-2.25
+```
+```
+ml OpenBLAS/0.3.1
+```
+```
+ml GSL/2.5
+```
+```
+cd src
+```
+```
+make clobber
+```
+```
+make install
+```
+
+### F Statistics
 https://bodkan.net/admixr/articles/tutorial.html 
 
-## Outgroup F3
+### Outgroup F3
 Command line: `qp3pop -p parfile` where parfile has format:
 
 ```
@@ -13,7 +38,7 @@ indivname:      input indiv file    (in eigenstrat format)
 popfilename:    a file containing rows with three populations on each line A, B and C.
 inbreed: YES #used if pseudodiploid
 ```
-## F4 Stats
+### F4 Stats
 Command line: `qp3pop -p parfile` where parfile has format:
 ```
 genotypename:   input genotype file (in eigenstrat format)
