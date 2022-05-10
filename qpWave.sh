@@ -41,3 +41,5 @@ details:        YES") \
 > ${in1}.qpWave.out
 
 #some code to consolidate output files for R
+grep "f4rank" ${in1}*.qpWave.out | awk '{print $1,$2,$8}' > ${in1}_${pop}_summary.qpWave.out
+sed -i 's/.qpWave.out:f4rank://g' ${in1}_${pop}_summary.qpWave.out
