@@ -23,22 +23,27 @@ echo "DONE"
 
 echo "writing left and right files"
 #write popleft file with individuals from target population
-for i in inds; do 
-  * code to loop right all pairwise combos*
+for i1 in $inds; do 
+  for i2 in $inds; do
+   echo "${i1}\n${i2}" > ${in1}_${i1}_${i2}.left
+  done
 done
+
 #write popright file with populations other than target population
 awk '{if ($3!="${pop}") print $3}' ${in1}.ind | sort | uniq > ${in1}.right
 echo "DONE"
 
 #run qpwave
+for left in ${in1}*.left; do
 /hpcfs/users/a1717363/Programs/AdmixTools/bin/qpWave \
 -p <(echo "genotypename:        ${in1}.geno
 snpname:        ${in1}.snp
 indivname:      ${in1}_${pop}.ind
-popleft:        ${in1}.left
+popleft:        ${left}
 popright:       ${in1}.right
 details:        YES") \
-> ${in1}.qpWave.out
+> ${in1}.${left}.qpWave.out
+done
 
 #some code to consolidate output files for R
 grep "f4rank" ${in1}*.qpWave.out | awk '{print $1,$2,$8}' > ${in1}_${pop}_summary.qpWave.out
