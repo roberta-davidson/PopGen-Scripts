@@ -7,7 +7,7 @@ ml OpenBLAS/0.3.1
 #input dataset in eigenstrat format containing individuals from target population and refernce populations
 #set input dataset and population to investigate
 in1=data18
-pop=Chonos
+pop=TargetPop
 ## MUST change pop in awk commands (awk cannot call variavle in search)
 
 #make directory
@@ -21,10 +21,10 @@ cp ../${in1}.ind .
 
 echo "setting variables"
 #set non-target populations as a variable for popright
-pops="$(awk '{if ($3!="Chonos") print $3}' ${in1}.ind | sort | uniq)"
+pops="$(awk '{if ($3!="TargetPop") print $3}' ${in1}.ind | sort | uniq)"
 
 #set individuals in target population as a variable
-inds="$(awk '{if ($3=="Chonos") print $1"_"$3}' ${in1}.ind)"
+inds="$(awk '{if ($3=="TargetPop") print $1"_"$3}' ${in1}.ind)"
 
 #check
 echo "POPS:
@@ -37,7 +37,7 @@ DONE"
 
 echo "preparing ind file"
 #write ind file with "ID_POP" in pop column for target pop of interest
-awk '{OFS="\t"} {if ($3=="Chonos") print $1,$2,$1"_"$3; else print $1,$2,$3}' ${in1}.ind > ${in1}_${pop}.ind
+awk '{OFS="\t"} {if ($3=="TargetPop") print $1,$2,$1"_"$3; else print $1,$2,$3}' ${in1}.ind > ${in1}_${pop}.ind
 echo "DONE"
 
 
@@ -59,12 +59,15 @@ done
 
 
 #write popright file with populations other than target population
-awk '{if ($3!="Chonos") print $3}' ${in1}.ind | sort | uniq > ${in1}_${pop}.right
+awk '{if ($3!="TargetPop") print $3}' ${in1}.ind | sort | uniq > ${in1}_${pop}.right
 echo "DONE"
 
-#run qpWave in a loop for each pairwise combo
+#run qpWave in a parallel loop of N-process batches for each pairwise combo
 echo "running qpWave"
+N=12
+(
 for pair in ${in1}_*.left; do
+	((i=i%N)); ((i++==0)) && wait
 	/hpcfs/users/a1717363/Programs/AdmixTools/bin/qpWave \
 	-p <(echo "genotypename:        ${in1}.geno
 	snpname:        ${in1}.snp
@@ -72,14 +75,15 @@ for pair in ${in1}_*.left; do
 	popleft:        ${pair}
 	popright:       ${in1}_${pop}.right
 	details:        YES") \
-	> ${in1}_${pair}.qpWave.out
+	> ${pair}.qpWave.out &
 done
+)
 echo "DONE"
 
 #collate output stats for R
 echo "writing stats summary table"
-grep "f4rank: 0" *qpWave.out | awk '{print $1,$2,$8}' > ${in1}_${pop}_summary.qpWave.out
-sed -i "s/${in1}_${in1}//g" ${in1}_${pop}_summary.qpWave.out
+grep "f4rank: 0" *.left.qpWave.out | awk '{print $1,$2,$8}' > ${in1}_${pop}_summary.qpWave.out
+sed -i "s/${in1}_//g" ${in1}_${pop}_summary.qpWave.out
 sed -i "s/_${pop}.left.qpWave.out:f4rank://g" ${in1}_${pop}_summary.qpWave.out
 sed -i "s/_${pop}_/ /g" ${in1}_${pop}_summary.qpWave.out
 echo "DONE"
