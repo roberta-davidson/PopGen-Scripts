@@ -29,11 +29,14 @@ snpoutname:	${in1}.bim
 indivoutname:	${in1}.fam")
 
 # Using Plink files get the Y
-plink --bfile ${in1} --chr Y --recode --transpose --out ${in1}_Y
+plink --bfile ${in1} --chr Y --allow-no-sex --recode transpose --out ${in1}_Y
+rm *nosex
+
 # get qcall
-python ${Yfitter}/tped2qcall.py ${in1}_Y > ${in1}_Y.qcall
+python2 ${Yfitter}/tped2qcall.py ${in1}_Y > ${in1}_Y.qcall
+
 #run Yfitter
-${Yfitter}/Yfitter -m -s karafet_tree_b36.xml ${in1}_Y.qcall
+${Yfitter}/Yfitter -m -s karafet_tree_b37.xml ${in1}_Y.qcall > ${in1}.Yfitter.out
 
 #-m # multiple samples in file
 #-s # print negative log likelihoods - useful for QC
