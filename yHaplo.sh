@@ -30,7 +30,7 @@ snpoutname:	${in1}.bim
 indivoutname:	${in1}.fam")
 
 # Using Plink files get the Y vcf
-plink --bfile ${in1} --chr Y --keep-allele-order --allow-no-sex --recode bgz --out ${in1}_Y
+plink --bfile ${in1} --chr Y --keep-allele-order --allow-no-sex --recode vcf-iid bgz --out ${in1}_Y
 rm *nosex
 
 # Run
