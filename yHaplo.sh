@@ -10,6 +10,8 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=roberta.davidson@adelaide.edu.au
 
+## Requirements: Plink, Eigensoft, Yhaplo
+
 #load modules
 ml plink/1.90beta-4.4-21-May
 
