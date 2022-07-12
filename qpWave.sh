@@ -8,7 +8,7 @@ ml OpenBLAS/0.3.1
 #set input dataset and population to investigate
 in1=data18
 pop=TargetPop
-## MUST change pop in awk commands (awk cannot call variavle in search)
+## MUST change pop in awk commands below (awk cannot call variable in search)
 
 #make directory
 mkdir ${in1}_${pop}_qpWave
@@ -36,27 +36,25 @@ $inds
 DONE"
 
 echo "preparing ind file"
-#write ind file with "ID_POP" in pop column for target pop of interest
+#write ind file with "ID_POP" in pop column for target pop of interest so each individual is treated seperately rather than as one population
 awk '{OFS="\t"} {if ($3=="TargetPop") print $1,$2,$1"_"$3; else print $1,$2,$3}' ${in1}.ind > ${in1}_${pop}.ind
 echo "DONE"
 
 
 echo "writing left and right files"
-#write popleft file with individuals from target population
+#write popleft files with individuals from target population (one file per pair, one individual per line)
 for i1 in $inds; do 
   for i2 in $inds; do
    printf "${i1}\n${i2}" > ${in1}_${i1}_${i2}.left
   done
 done
 
-##remove left files that have same individual twice
 #remove duplicate rows in all left files
 for file in ${in1}_*.left; do
 	awk '!seen[$1]++' ${file} > ${file}_2
 	mv ${file}_2 ${file}
 done
-#qpWave will auto abort on left files that only have one line and move to the next :)
-
+#qpWave will auto abort on left files that only have one line and move to the next left file :)
 
 #write popright file with populations other than target population
 awk '{if ($3!="TargetPop") print $3}' ${in1}.ind | sort | uniq > ${in1}_${pop}.right
@@ -80,7 +78,7 @@ done
 )
 echo "DONE"
 
-#collate output stats for R
+#collate output stats for R plotting - (can't remember if this works or might need some fixing)
 echo "writing stats summary table"
 grep "f4rank: 0" *.left.qpWave.out | awk '{print $1,$2,$8}' > ${in1}_${pop}_summary.qpWave.out
 sed -i "s/${in1}_//g" ${in1}_${pop}_summary.qpWave.out
