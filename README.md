@@ -25,11 +25,11 @@ make clobber
 make install
 ```
 
-### F Statistics
+## F Statistics
 https://bodkan.net/admixr/articles/tutorial.html 
 
 
-### qpWave and qpAdm
+## qpWave and qpAdm
 https://github.com/DReichLab/AdmixTools/blob/master/README.QpWave \
 Both take the same input parameter file: 
 ```
@@ -41,117 +41,17 @@ popright:      right population list (1 per line)
 details:       YES 
 ```
 **qpWave** finds out how many admixture events are betwee the left and right populations. usually this should be run before qpAdm \
-**qpAdm** finds the weight of admixture from the rightpop to leftppop (target).
+**qpAdm** then finds the weight of admixture from the rightpop to leftppop (target).
 
-### Pairwise individual comparisons with qpWave to find populations
-Loop script to submit qpWave.sh for populations of interest:
-```
-#!/bin/bash
+## Pairwise individual comparisons with qpWave to find populations
+To test if each pair of individuals forms a clade relative to outgroups. Outgroup matters - if you use africa then everything will be a clade relatively, if you use something too similar then nothing will be a clade. 
 
-# Notification configuration
-#SBATCH --mail-type=END
-#SBATCH --mail-type=FAIL
-#SBATCH --mail-user=roberta.davidson@adelaide.edu.au
+- Use the `qpWave.sh` script to run qpwave for every pair ina target population. Requires eigenstrat dataset containing the target population and outgroup population. 
+- Use `qpWaveLoop.sh` if you want to run pairwise qpwave for multiple populations in your dataset, it submits batch jobs for each specified population in a loop. 
+- Download the data and plot in R with `qpWave_Pairwise.R` to get a plot like this, where darker blocks are "populations" because the do not have significant values for being a clade relative to the outgroup:
 
-# for loop to write qpwave submission script for each populaiton in set
-for i in MachuPicchu Peru
-	do
-	sed "s/TargetPop/$i/g" qpWave.sh > qpWave_${i}.sh
-	sbatch qpWave_${i}.sh
-done
-```
-General submission script that reads dataset and rights lift and right files, runs qpWave and summarises output statistics into a matrix for R:
-```
-#!/bin/bash
+<img width="600" alt="image" src="https://user-images.githubusercontent.com/78726635/178386551-6358fc5c-74ef-4d8f-a50b-aa57a2e08555.png">
 
-#load modules
-ml GSL/2.5
-ml OpenBLAS/0.3.1
-
-#input dataset in eigenstrat format containing individuals from target population and refernce populations
-#set input dataset and population to investigate
-in1=data18
-pop=TargetPop
-## MUST change pop in awk commands (awk cannot call variavle in search)
-
-#make directory
-mkdir ${in1}_${pop}_qpWave
-cd ${in1}_${pop}_qpWave
-
-#copy files
-cp ../${in1}.geno .
-cp ../${in1}.snp .
-cp ../${in1}.ind .
-
-echo "setting variables"
-#set non-target populations as a variable for popright
-pops="$(awk '{if ($3!="TargetPop") print $3}' ${in1}.ind | sort | uniq)"
-
-#set individuals in target population as a variable
-inds="$(awk '{if ($3=="TargetPop") print $1"_"$3}' ${in1}.ind)"
-
-#check
-echo "POPS:
-$pops
-==========
-INDS:
-$inds
-==========
-DONE"
-
-echo "preparing ind file"
-#write ind file with "ID_POP" in pop column for target pop of interest
-awk '{OFS="\t"} {if ($3=="TargetPop") print $1,$2,$1"_"$3; else print $1,$2,$3}' ${in1}.ind > ${in1}_${pop}.ind
-echo "DONE"
-
-
-echo "writing left and right files"
-#write popleft file with individuals from target population
-for i1 in $inds; do 
-  for i2 in $inds; do
-   printf "${i1}\n${i2}" > ${in1}_${i1}_${i2}.left
-  done
-done
-
-##remove left files that have same individual twice
-#remove duplicate rows in all left files
-for file in ${in1}_*.left; do
-	awk '!seen[$1]++' ${file} > ${file}_2
-	mv ${file}_2 ${file}
-done
-#qpWave will auto abort on left files that only have one line and move to the next :)
-
-
-#write popright file with populations other than target population
-awk '{if ($3!="TargetPop") print $3}' ${in1}.ind | sort | uniq > ${in1}_${pop}.right
-echo "DONE"
-
-#run qpWave in a parallel loop of N-process batches for each pairwise combo
-echo "running qpWave"
-N=12
-(
-for pair in ${in1}_*.left; do
-	((i=i%N)); ((i++==0)) && wait
-	/hpcfs/users/a1717363/Programs/AdmixTools/bin/qpWave \
-	-p <(echo "genotypename:        ${in1}.geno
-	snpname:        ${in1}.snp
-	indivname:      ${in1}_${pop}.ind
-	popleft:        ${pair}
-	popright:       ${in1}_${pop}.right
-	details:        YES") \
-	> ${pair}.qpWave.out &
-done
-)
-echo "DONE"
-
-#collate output stats for R
-echo "writing stats summary table"
-grep "f4rank: 0" *.left.qpWave.out | awk '{print $1,$2,$8}' > ${in1}_${pop}_summary.qpWave.out
-sed -i "s/${in1}_//g" ${in1}_${pop}_summary.qpWave.out
-sed -i "s/_${pop}.left.qpWave.out:f4rank://g" ${in1}_${pop}_summary.qpWave.out
-sed -i "s/_${pop}_/ /g" ${in1}_${pop}_summary.qpWave.out
-echo "DONE"
-```
 
 ### Outgroup F3
 Command line: `qp3pop -p parfile` where parfile has format:
