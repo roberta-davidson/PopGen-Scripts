@@ -49,33 +49,24 @@ To test if each pair of individuals forms a clade relative to outgroups. Outgrou
 - Use the `qpWave.sh` script to run qpwave for every pair ina target population. Requires eigenstrat dataset containing the target population and outgroup population. 
 - Use `qpWaveLoop.sh` if you want to run pairwise qpwave for multiple populations in your dataset, it submits batch jobs for each specified population in a loop. 
 - Download the data and plot in R with `qpWave_Pairwise.R` to get a plot like this, where darker blocks are "populations" because the do not have significant values for being a clade relative to the outgroup:
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/78726635/178389774-1db5eb26-fde1-4c68-a326-321b101af1c4.png">
 
-<img width="600" alt="image" src="https://user-images.githubusercontent.com/78726635/178386551-6358fc5c-74ef-4d8f-a50b-aa57a2e08555.png">
+Style inspired by this paper https://www.nature.com/articles/s41559-020-1102-0
+
+## Outgroup F3 tests
+Tests of this tree: \
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/78726635/178389363-0c5c71c6-41b5-4513-8695-b94bf4f22bf6.png">
+
+F3 is a measure of the branch length of the blue, therefore higher F3 means closer related X and Test.
+
+- Use `qp3Pop.sh` to run outgroup F3 on a dataset, specifying the Test populaiton, and the script will rotate X as all other populations in the dataset.
+- Use `qp3Pop_Loop.sh` if you want to submit a job of `qp3Pop.sh` for each test population. i.e, to run every combination in your dataset.
+- Use `F3_plot.R` to plot in R, like this:
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/78726635/178390806-ead79783-21f8-4ea0-a79c-aa32a6598317.png">
 
 
-### Outgroup F3
-Command line: `qp3pop -p parfile` where parfile has format:
-
-```
-genotypename:   input genotype file (in eigenstrat format)
-snpname:        input snp file      (in eigenstrat format)
-indivname:      input indiv file    (in eigenstrat format)
-popfilename:    a file containing rows with three populations on each line A, B and C.
-inbreed: YES #used if pseudodiploid or if target pop IS inbred
-```
-Bash submission script:
-```
-in1=$1
-
-/hpcfs/users/a1717363/Programs/AdmixTools/bin/qp3Pop \
--p <(echo "genotypename:	${in1}.geno
-snpname:	${in1}.snp
-indivname:	${in1}.ind
-popfilename: ${in1}.qp3.list") \
-> ${in1}.qp3Pop.out
-```
-
-### F4 Stats
+## F4 Stats
 
 
 # Kinship Analyses
