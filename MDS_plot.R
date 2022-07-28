@@ -2,6 +2,16 @@ library(tidyverse)
 library(data.table)
 library(ggrepel)
 
+setwd("/Users/robertadavidson/Box Sync/Robbi_PhD/05_Chonos/f3_ind")
+df=read.table("/Users/robertadavidson/Box Sync/Robbi_PhD/05_Chonos/f3_ind/data31_.R.qp3Pop.out",
+              col.names=c("PopA", "PopB", "PopC", "F3", "StdErr", "Z", "SNPs"))
+
+labs=read.table("/Users/robertadavidson/Box Sync/Robbi_PhD/05_Chonos/f3_ind/data31_labels.txt",
+                col.names=c("Ind","Pop"))
+
+#inverse f3 stat
+df <- df %>% mutate(inverse_F3=F3^-1) %>%
+    mutate(negF3=1-F3)
 #### MDS plot ####
 #extract cols for plot
 MDS_f3 <- select(df,PopA,PopB,negF3)
