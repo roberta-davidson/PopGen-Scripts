@@ -9,12 +9,11 @@ library(stats)
 library(adegenet)
 library(phytools)
 
-setwd("/Users/robertadavidson/Box Sync/Robbi_PhD/05_Chonos/f3_ind")
-df=read.table("/Users/robertadavidson/Box Sync/Robbi_PhD/05_Chonos/f3_ind/data31_.R.qp3Pop.out",
-              col.names=c("PopA", "PopB", "PopC", "F3", "StdErr", "Z", "SNPs"))
+### Draw a neighbour joining tree from pairwise f3 stats ###
+setwd("/path/f3_ind")
+df=read.table("/path/f3_ind/data31_.R.qp3Pop.out", col.names=c("PopA", "PopB", "PopC", "F3", "StdErr", "Z", "SNPs"))
 
-labs=read.table("/Users/robertadavidson/Box Sync/Robbi_PhD/05_Chonos/f3_ind/data31_labels.txt",
-                col.names=c("Ind","Pop"))
+labs=read.table("/path/f3_ind/data31_labels.txt", col.names=c("Ind","Pop"))
 
 #inverse f3 stat
 df <- df %>% mutate(inverse_F3=F3^-1) %>%
@@ -23,6 +22,7 @@ df <- df %>% mutate(inverse_F3=F3^-1) %>%
 #extract cols for tree
 df_f3 <- select(df,PopA,PopB,inverse_F3)
 NN_df_f3 <- filter(df_f3, PopA!="USR1", PopB!="USR1")
+
 #pivot wider
 f3_matrix <- pivot_wider(df_f3, names_from=PopA, values_from = inverse_F3, values_fill = 0.00)
 f3_matrix <- f3_matrix[, -1]
