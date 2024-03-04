@@ -1,33 +1,11 @@
 # PopGen-Scripts
+Miscellaneous scripts I have used in ancient DNA and popgen. Take with a grain of salt.
 
 ## ADMIXTOOLS
 https://github.com/DReichLab/AdmixTools \
-Install on HPC:
-```
-git clone https://github.com/DReichLab/AdmixTools.git
-```
-```
-ml gslib/90-GCC-4.9.3-binutils-2.25
-```
-```
-ml OpenBLAS/0.3.1
-```
-```
-ml GSL/2.5
-```
-```
-cd src
-```
-```
-make clobber
-```
-```
-make install
-```
 
 ## F Statistics
 https://bodkan.net/admixr/articles/tutorial.html 
-
 
 ## qpWave and qpAdm
 https://github.com/DReichLab/AdmixTools/blob/master/README.QpWave \
