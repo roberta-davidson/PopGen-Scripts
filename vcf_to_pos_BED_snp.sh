@@ -1,3 +1,7 @@
+#!/bin/bash
+
+#bash script to create a .snp, .pos and .BED files from a VCF. Files required by pileupcaller for genotyping
+
 VCF=$1
 
 #Need to create  .snp and .pos and .BED file. 

@@ -1,14 +1,4 @@
 #!/bin/bash
-#SBATCH -p batch
-#SBATCH -N 1 #nodes
-#SBATCH -n 4 #cores
-#SBATCH --time=02:00:00 #hh:mm::ss
-#SBATCH --mem=12GB #RAM requested
-
-# Notification configuration
-#SBATCH --mail-type=END
-#SBATCH --mail-type=FAIL
-#SBATCH --mail-user=roberta.davidson@adelaide.edu.au
 
 #load modules
 ml plink/1.90beta-4.4-21-May
@@ -38,6 +28,7 @@ python2 ${Yfitter}/tped2qcall.py ${in1}_Y > ${in1}_Y.qcall
 #run Yfitter
 ${Yfitter}/Yfitter -m -s karafet_tree_b37.xml ${in1}_Y.qcall > ${in1}.Yfitter.out
 
+#flags
 #-m # multiple samples in file
 #-s # print negative log likelihoods - useful for QC
 #-q #sets difference in log likelihood that defines confidence haplogroup. Default 8.685

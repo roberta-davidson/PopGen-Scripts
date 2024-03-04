@@ -1,8 +1,13 @@
+#!/bin/bash
+# TKGWV2 is An ancient DNA relatedness pipeline for ultra-low coverage whole genome shotgun data
+
+#module setup
 module purge
 ml arch/haswell
 ml arch/arch/haswell
 ml modulefiles/arch/haswell
 ml R/3.5.1
+
 #requires R package data.table, hence this line for running on hpc
 export R_LIBS_USER=/hpcfs/users/a1717363/local/RLibs
 ml plink

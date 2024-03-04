@@ -13,15 +13,17 @@ conda activate read
 
 
 # READ input: PLINK .tped and .tfam files
-# prodece tped by --recode transpose
+# produce tped by --recode transpose
 
 DATA=$1
 
 #Prepare dataset
 
+#flags: turn off plink auto-reorder of alleles, minor allele frequency, genotyping threshold, retain individuals without sex assigned 
 plink --bfile ${DATA} --keep-allele-order --maf 0.01 --geno 0.999999 --mind 1.0 --allow-no-sex --recode transpose --out ${DATA}
 
 rm ${DATA}.nosex
 
 # Run READ
+# READ output loads pdf viewer, so may not work on HPC environments without that capability
 python /hpcfs/users/a1717363/Programs/read/READ.py ${DATA}

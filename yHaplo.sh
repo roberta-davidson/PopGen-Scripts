@@ -1,26 +1,16 @@
 #!/bin/bash
-#SBATCH -p batch
-#SBATCH -N 1 #nodes
-#SBATCH -n 1 #cores
-#SBATCH --time=00:05:00 #hh:mm::ss
-#SBATCH --mem=8GB #RAM requested
-
-# Notification configuration
-#SBATCH --mail-type=END
-#SBATCH --mail-type=FAIL
-#SBATCH --mail-user=roberta.davidson@adelaide.edu.au
+# To determine Y haplogroup from Y chromosome variants
 
 ## Requirements: Plink, Eigensoft, Yhaplo
 
 #load modules
 ml plink/1.90beta-4.4-21-May
-
 yhaplo=/hpcfs/users/a1717363/Programs/yhaplo
 in1=$1
 
-# inputs VCF file (only Y sites)
+# inputs VCF file (only Y chr sites)
 
-#convert dataset from eig to plink
+#convert dataset from eig to plink using eigenstrat convertf
 convertf -p <(echo "genotypename:	${in1}.geno
 snpname:	${in1}.snp
 indivname:	${in1}.ind

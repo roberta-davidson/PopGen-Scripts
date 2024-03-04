@@ -29,13 +29,15 @@ hashcheck: NO")
 echo "writing list file"
 pops=$(awk '{print $3}' ${in1}.ind | sort | uniq)
 
+#remove old or failed list files
 rm ${in1}.qp3.list
 
+#write file
 for i in ${pops}; do
         echo "${i} ${P2} Mbuti" >> ${in1}.qp3.list
 done
 
-# for slurm
+# for log
 cat ${in1}.qp3.list
 
 echo "done
@@ -52,5 +54,5 @@ popfilename: ${in1}.qp3.list") \
 # for slurm
 cat ${in1}.qp3Pop.out
 
-#print results for R pltting
+#modify results output to ease R plotting
 grep 'result:' ${in1}_${P2}.qp3Pop.out | awk '{print $2, $3, $4, $5, $6, $7, $8, $9}' > ${in1}_${P2}.R.qp3Pop.out

@@ -1,3 +1,5 @@
+#!/bin/bash
+# to merge two BED files, and create pos and snp files to match
 IN1=$1
 IN2=$2
 OUT=$3
@@ -20,13 +22,13 @@ sed -i 's/chr//g' ${OUT}.bed
 #change SNP name for ChrNumber_pos
 awk '{print $1,$2,$3,$1"_"$3,$5,$6}' ${OUT}.bed >> ${OUT}_2.bed
 
-#remove duplicates
+#remove duplicates in column 4
 awk '!seen[$4]++' ${OUT}_2.bed > ${OUT}_3.bed
 
 #sort file by chr and pos
 sort -V -k1 -k2 ${OUT}_3.bed > ${OUT}_sorted.bed
 
-#rm intermediates
+#rm intermediate files
 rm ${OUT}_2.bed ${OUT}_3.bed ${OUT}.bed
 
 #CREATE POS FILE
