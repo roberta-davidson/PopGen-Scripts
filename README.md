@@ -75,8 +75,19 @@ Phoenix Wiki for using Python virtual envs inside slurm script: <https://wiki.ad
 
 ## hapROH
 
-- VCF input (I think)
+- EIGENSTRAT file input
 - can test close-kin unions & background relatedness
 - primed for pseudohaploid 1240k data \
 <https://github.com/hringbauer/hapROH> \
 <https://pypi.org/project/hapROH/>
+
+1. prepare the meta information file, usually called `<prefix>_meta_blank.csv` that looks like:
+
+```
+iid,age,clst,lat,lon
+Sample1,10000,Population1,12.03,37.89
+```
+the age and lat/long are only used in the mapping hapROH step which I never got to run, so you can put dummy values if you only want to obtain barplots. the population controls how the individuals are clustered.
+
+2. run `hapROH.py` on your data, you'll need to edit the script to give the appropriate paths to input files.
+3. run `plot_hapROH.py` to generate the classic hapROH barplot.
